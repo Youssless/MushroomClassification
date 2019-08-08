@@ -5,13 +5,14 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn import metrics
+import sklearn.model_selection
 
 plt.style.use('seaborn-notebook')
 
 # viewing the data
 df = pd.read_csv('Dataset/mushrooms.csv')
 print(df.head())
-
+print(df['gill-color'].value_counts())
 encoder = LabelEncoder()
 
 # X =  all cols apart from class
@@ -51,38 +52,22 @@ results_dict.update({'class': y_pred})
 results = pd.DataFrame(results_dict)
 results.to_csv('Dataset/results.csv')
 
-#print(results.head())
-#print(results['odor'].unique())
-#print(results['class(1=p, e=0)'].value_counts())
 
-#splt.figure(1)
-
-'''
+# visualising
+print(results['class'].value_counts())
 plt.figure(1)
-plt.bar(['edible','poisonous'], np.array(results['class(1=p, e=0)'].value_counts()))
-plt.ylabel('count')
+plt.bar(['Edible','Poisonous'], np.array(results['class'].value_counts()))
+plt.ylabel('Count')
+plt.title('Predicted counts of poisonous mushooms and edible mushrooms')
+plt.show()
 
 plt.figure(2)
-plt.scatter(X_test, y_test)
-plt.xlabel('types of smells')
-plt.ylabel('poisonous?')
+results = pd.DataFrame(results[['class', 'gill-color', 'cap-color']])
+groupby_class = results.groupby(['class'])
+
+for name, group in groupby_class:
+    plt.plot(group['gill-color'], group['cap-color'],marker='o', linestyle='', markersize='12', label=name)
+plt.xlabel('gill-color')
+plt.ylabel('cap-color')
+plt.legend()
 plt.show()
-'''
-'''
-plt.figure(1)
-plt.bar(odor_types, odor_count, color='green')
-plt.title('counts for each mushroom odor')
-plt.xlabel('odor')
-plt.ylabel('count')
-
-plt.figure(2)
-plt.bar(['edible', 'poisonous'], np.array(df['class'].value_counts()), color='red')
-plt.title('counts for each class')
-plt.xlabel('class')
-plt.ylabel('count')
-
-plt.figure(3)
-plt.scatter(X, y)
-
-plt.show()
-'''
